@@ -20,10 +20,10 @@ async function convertCurrency(fromCurrency: string, toCurrency: string, amount:
   }
 
   // Oranları bir nesneye dönüştür
-  const rateMap = rates.reduce((acc, rate) => {
-    acc[rate.currency] = rate.try_rate;
-    return acc;
-  }, {});
+  const rateMap = {};
+  rates.forEach(rate => {
+    rateMap[rate.currency] = rate.try_rate;
+  });
 
   // TRY'ye dönüştür, sonra hedef para birimine dönüştür
   if (fromCurrency === "TRY") {
@@ -115,7 +115,7 @@ async function handleMessage(message) {
 
     // Doğrudan dönüşüm mesajı ise (örn: "100 TRY to BTC")
     const conversionRegex = /(\d+(?:\.\d+)?)\s+(\w+)\s+to\s+(\w+)/i;
-    const match = message.text.match(conversionRegex);
+    const match = message.text?.match(conversionRegex);
 
     if (match) {
       const amount = Number.parseFloat(match[1]);
@@ -145,7 +145,7 @@ async function handleMessage(message) {
   // Grup mesajı ise
   else if (chatType === "group" || chatType === "supergroup") {
     const conversionRegex = /(\d+(?:\.\d+)?)\s+(\w+)\s+to\s+(\w+)/i;
-    const match = message.text.match(conversionRegex);
+    const match = message.text?.match(conversionRegex);
 
     if (match) {
       const amount = Number.parseFloat(match[1]);
